@@ -3,9 +3,16 @@
     {% for post in session.pop('my_list', []) %}
         <article class="media content-section">
           <div class="media-body">
-            
+            <div class="article-metadata">
+            {% if post.analysis[0]>0 %}
+              <a class="mr-2" href="#">Positive</a>
+            {% else %}
+              <a class="mr-2" href="#">Negative</a>
+            {% endif %}  
+            <p class="mr-2" >|  Positive</p>
+            </div>
             <h2><a class="article-title" href="#">{{ post.text }}</a></h2>
-            <p class="article-content">{{ post.ana }}</p>
+            <p class="article-content">Sentiment(polarity={{ post.analysis[0] }}, subjectivity={{ post.analysis[1] }})</p>
           </div>
         </article>
     {% endfor %}
