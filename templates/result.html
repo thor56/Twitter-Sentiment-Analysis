@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% for post in session.pop('my_list', []) %}
+        <article class="media content-section">
+          <div class="media-body">
+            
+            <h2><a class="article-title" href="#">{{ post.text }}</a></h2>
+            <p class="article-content">{{ post.ana }}</p>
+          </div>
+        </article>
+    {% endfor %}
+    
+{% endblock content %}

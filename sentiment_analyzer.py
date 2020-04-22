@@ -1,6 +1,7 @@
 import tweepy
 from textblob import TextBlob
 
+
 consumer_key = 'SgJJpWvvQMB0QU2nrRM6by2DM'
 consumer_key_secret = '8aRUfDlqzuoOnY5yaGrcwkStVqoDvxo6aTutXM8LlNfkG0BUZz'
 
@@ -15,6 +16,8 @@ api = tweepy.API(auth)
 
 search_term = input("Enter a search keyword: ")
 public_tweets = api.search(search_term)
+
+
 
 for tweet in public_tweets:
 	print(tweet.text)
