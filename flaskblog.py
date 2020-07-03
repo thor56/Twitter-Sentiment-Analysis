@@ -1,25 +1,12 @@
 from flask import Flask, render_template, url_for, flash, redirect, session
-from forms import RegistrationForm, LoginForm, SearchForm
+from forms import  SearchForm
 import tweepy
 from textblob import TextBlob
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 
-posts = [
-    {
-        'author': 'Corey Schafer',
-        'title': 'Blog Post 1',
-        'content': 'First post content',
-        'date_posted': 'April 20, 2018'
-    },
-    {
-        'author': 'Jane Doe',
-        'title': 'Blog Post 2',
-        'content': 'Second post content',
-        'date_posted': 'April 21, 2018'
-    }
-]
+
 twdata = []
 
 def TweetBlast(searchterm):
@@ -46,53 +33,38 @@ def TweetBlast(searchterm):
 def add_user(user):
   twdata.append(user)
 
-
-@app.route("/")
-@app.route("/home")
+@app.route("/", methods=['GET', 'POST'])
+@app.route("/home", methods=['GET', 'POST'])
 def home():
-    return render_template('home.html', posts=posts)
-
-@app.route("/result")
-def result():
-    return render_template('result.html', posts=posts)
-
-@app.route("/about")
-def about():
-    return render_template('about.html', title='About')
-
-
-@app.route("/register", methods=['GET', 'POST'])
-def register():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('home'))
-    return render_template('register.html', title='Register', form=form)
-
-@app.route("/search", methods=['GET', 'POST'])
-def search():
     form = SearchForm()
     if form.validate_on_submit():
         
         tweet_lis = TweetBlast(form.searchphrase.data)
-        flash(f'Sentiment analysis for phrase {form.searchphrase.data}', 'success')
+        sum = 0
+        
+        for x in tweet_lis:
+            if x['analysis'][0] > 0:
+                sum = sum + 1
+            else :
+                sum = sum - 1
+        if sum > 0:
+            polarity = "Positive"
+        else :
+            polarity = "Negative"
+           
+        flash(f'Sentiment analysis for phrase {form.searchphrase.data}. Overall result : {polarity}', 'success')
         session['my_list'] = tweet_lis
         session.modified = True
         return redirect(url_for('result'))
-    return render_template('search.html', title='Search', form=form)
+    return render_template('home.html', title='Search', form=form)
 
+@app.route("/result")
+def result():
+    return render_template('result.html')
 
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-            flash('You have been logged in!', 'success')
-            return redirect(url_for('home'))
-        else:
-            flash('Login Unsuccessful. Please check username and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
-
+# @app.route("/about")
+# def about():
+#     return render_template('about.html', title='About')
 
 if __name__ == '__main__':
     app.run(debug=True)

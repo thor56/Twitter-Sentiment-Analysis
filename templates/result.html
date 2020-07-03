@@ -1,20 +1,25 @@
 {% extends "layout.html" %}
 {% block content %}
+    
+    
+   
     {% for post in session.pop('my_list', []) %}
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
             {% if post.analysis[0]>0 %}
-              <a class="mr-2" href="#">Positive</a>
+             <span style="color:blue;">Positive</span>
+            
             {% else %}
-              <a class="mr-2" href="#">Negative</a>
+            <span style="color:red;">Negative</span>
             {% endif %}  
-            <p class="mr-2" >|  Positive</p>
+            <p class="article-content mr-2" style="color:green;">Sentiment(polarity={{ post.analysis[0] }}, subjectivity={{ post.analysis[1] }})</p>
             </div>
             <h2><a class="article-title" href="#">{{ post.text }}</a></h2>
-            <p class="article-content">Sentiment(polarity={{ post.analysis[0] }}, subjectivity={{ post.analysis[1] }})</p>
+            
           </div>
         </article>
     {% endfor %}
+    
     
 {% endblock content %}
